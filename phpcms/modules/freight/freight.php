@@ -22,6 +22,13 @@ class freight extends admin {
 			$infos[$i]['continue_num'] = $shippingway['continue_num'];
 			$infos[$i]['first_fee'] = $shippingway['first_fee'];
 			$infos[$i]['continue_fee'] = $shippingway['continue_fee'];
+			//省市区
+            $province = $this->region->get_one(array('region_id'=>$infos[$i]['province']));
+            $infos[$i]['province'] = $province['region_name'];
+            $city = $this->region->get_one(array('region_id'=>$infos[$i]['city']));
+            $infos[$i]['city'] = $city['region_name'];
+            $district = $this->region->get_one(array('region_id'=>$infos[$i]['district']));
+            $infos[$i]['district'] = $district['region_name'];
 		}
 		$str = $_REQUEST['pc_hash'];
 
@@ -35,6 +42,16 @@ class freight extends admin {
 		$country = $this->region->get_one(array('parent_id'=>0));
 		include $this->admin_tpl('freight_add');
    }
+
+    //详情页面
+    public function infopage() {
+	    $template_id = $_GET['template_id'];
+        if($template_id){
+            $shipping_way=$this->shipping_way->select(array('template_id'=>$template_id));
+            $template = $this->freight->get_one(array('template_id'=>$template_id));
+        }
+        include $this->admin_tpl('freight_edit');
+    }
 
    //获取省市区
 	public function regionlist() {
@@ -51,171 +68,121 @@ class freight extends admin {
 
 	//添加
  	public function add() {
-		$_POST['link']['addtime'] = SYS_TIME;
-		$_POST['link']['siteid'] = $this->get_siteid();
-		if(empty($_POST['link']['name'])) {
-			showmessage(L('sitename_noempty'),HTTP_REFERER);
-		} else {
-			$_POST['link']['name'] = safe_replace($_POST['link']['name']);
-		}
-		if ($_POST['link']['logo']) {
-			$_POST['link']['logo'] = safe_replace($_POST['link']['logo']);
-		}
-		$data = new_addslashes($_POST['link']);
-		$linkid = $this->db->insert($data,true);
-		if(!$linkid) return FALSE; 
-		$siteid = $this->get_siteid();
-		//更新附件状态
-		if(pc_base::load_config('system','attachment_stat') & $_POST['link']['logo']) {
-			$this->attachment_db = pc_base::load_model('attachment_model');
-			$this->attachment_db->api_update($_POST['link']['logo'],'link-'.$linkid,1);
-		}
-		showmessage(L('operation_success'),HTTP_REFERER,'', 'add');
+        if(trim($_POST['template_name'])==''){
+            showmessage(L('请填写模板名称'),'');
+            die;
+        }
+        if(trim($_POST['country'])==0||trim($_POST['province'])==0||trim($_POST['city'])==0||trim($_POST['area'])==0){
+            showmessage(L('请选择商品所在地区'),'');
+            die;
+        }
 
-	}
-	
-	
-	
-	/**
-	 * 删除分类
-	 */
-	public function delete_type() {
-		if((!isset($_GET['typeid']) || empty($_GET['typeid'])) && (!isset($_POST['typeid']) || empty($_POST['typeid']))) {
-			showmessage(L('illegal_parameters'), HTTP_REFERER);
-		} else {
-			if(is_array($_POST['typeid'])){
-				foreach($_POST['typeid'] as $typeid_arr) {
- 					$this->db2->delete(array('typeid'=>$typeid_arr));
-				}
-				showmessage(L('operation_success'),HTTP_REFERER);
-			}else{
-				$typeid = intval($_GET['typeid']);
-				if($typeid < 1) return false;
-				$result = $this->db2->delete(array('typeid'=>$typeid));
-				if($result)
-				{
-					showmessage(L('operation_success'),HTTP_REFERER);
-				}else {
-					showmessage(L("operation_failure"),HTTP_REFERER);
-				}
-			}
-		}
-	}
-	
-	//:分类管理
- 	public function list_type() {
-		$this->db2 = pc_base::load_model('type_model');
-		$page = isset($_GET['page']) && intval($_GET['page']) ? intval($_GET['page']) : 1;
-		$infos = $this->db2->listinfo(array('module'=> ROUTE_M,'siteid'=>$this->get_siteid()),$order = 'listorder DESC',$page, $pages = '10');
-		$big_menu = array('javascript:window.top.art.dialog({id:\'add\',iframe:\'?m=link&c=link&a=add\', title:\''.L('link_add').'\', width:\'700\', height:\'450\'}, function(){var d = window.top.art.dialog({id:\'add\'}).data.iframe;var form = d.document.getElementById(\'dosubmit\');form.click();return false;}, function(){window.top.art.dialog({id:\'add\'}).close()});void(0);', L('link_add'));
-		$pages = $this->db2->pages;
-		include $this->admin_tpl('link_list_type');
-	}
- 
-	public function edit() {
-		if(isset($_POST['dosubmit'])){
- 			$linkid = intval($_GET['linkid']);
-			if($linkid < 1) return false;
-			if(!is_array($_POST['link']) || empty($_POST['link'])) return false;
-			if((!$_POST['link']['name']) || empty($_POST['link']['name'])) return false;
-			$this->db->update($_POST['link'],array('linkid'=>$linkid));
-			//更新附件状态
-			if(pc_base::load_config('system','attachment_stat') & $_POST['link']['logo']) {
-				$this->attachment_db = pc_base::load_model('attachment_model');
-				$this->attachment_db->api_update($_POST['link']['logo'],'link-'.$linkid,1);
-			}
-			showmessage(L('operation_success'),'?m=link&c=link&a=edit','', 'edit');
-			
-		}else{
- 			$show_validator = $show_scroll = $show_header = true;
-			pc_base::load_sys_class('form', '', 0);
-			$types = $this->db2->listinfo(array('module'=> ROUTE_M,'siteid'=>$this->get_siteid()),$order = 'typeid DESC');
- 			$type_arr = array ();
-			foreach($types as $typeid=>$type){
-				$type_arr[$type['typeid']] = $type['name'];
-			}
-			//解出链接内容
-			$info = $this->db->get_one(array('linkid'=>$_GET['linkid']));
-			if(!$info) showmessage(L('link_exit'));
-			extract($info); 
- 			include $this->admin_tpl('link_edit');
-		}
+        foreach ($_POST['default'] as &$default){
+            $default_first_num=trim($default['first_num']);
+            $default_first_fee=trim($default['first_fee']);
+            $default_continue_num=trim($default['continue_num']);
+            $default_continue_fee=trim($default['continue_fee']);
+            if($default_first_num==0||$default_first_num==''||!is_numeric($default_first_num)){
+                showmessage(L('商品件数必须为大于0的数字'),'');
+                die;
+            }
+            if($default_first_fee==0||$default_first_fee==''||!is_numeric($default_first_fee)){
+                showmessage(L('商品首费价格必须为大于0的数字'),'');
+                die;
+            }
+            if($default_continue_num==0||$default_continue_num==''||!is_numeric($default_continue_num)){
+                showmessage(L('商品续件数必须为大于0的数字'),'');
+                die;
+            }
+            if($default_continue_fee==0||$default_continue_fee==''||!is_numeric($default_continue_fee)){
+                showmessage(L('商品续费价格必须为大于0的数字'),'');
+                die;
+            }
+            $default[area_name]="全国";
+            $default[area_id]=1;
+            $default[is_default]=1;
+            $default[create_date]=time();
+            $default[create_by]=$_SESSION['userid'];
+        }
 
-	}
-	
-	/**
-	 * 修改友情链接 分类
-	 */
-	public function edit_type() {
-		if(isset($_POST['dosubmit'])){ 
-			$typeid = intval($_GET['typeid']); 
-			if($typeid < 1) return false;
-			if(!is_array($_POST['type']) || empty($_POST['type'])) return false;
-			if((!$_POST['type']['name']) || empty($_POST['type']['name'])) return false;
-			$this->db2->update($_POST['type'],array('typeid'=>$typeid));
-			showmessage(L('operation_success'),'?m=link&c=link&a=list_type','', 'edit');
-			
-		}else{
- 			$show_validator = $show_scroll = $show_header = true;
-			//解出分类内容
-			$info = $this->db2->get_one(array('typeid'=>$_GET['typeid']));
-			if(!$info) showmessage(L('linktype_exit'));
-			extract($info);
-			include $this->admin_tpl('link_type_edit');
-		}
+        foreach ($_POST['other'] as &$others){
+            if($others[area_id]==0||$others[area_id]==''){
+                showmessage(L('请选择商品配送区域'),'');
+                die;
+            }
+            if($others[first_num]==0||$others[first_num]==''||!is_numeric($others[first_num])){
+                showmessage(L('商品首费价格必须为大于0的数字'),'');
+                die;
+            }
+            if($others[first_fee]==0||$others[first_fee]==''||!is_numeric($others[first_fee])){
+                showmessage(L('商品首费价格必须为大于0的数字'),'');
+                die;
+            }
+            if($others[continue_num]==0||$others[continue_num]==''||!is_numeric($others[continue_num])){
+                showmessage(L('商品续件数必须为大于0的数字'),'');
+                die;
+            }
+            if($others[continue_fee]==0||$others[continue_fee]==''||!is_numeric($others[continue_fee])){
+                showmessage(L('商品续费价格必须为大于0的数字'),'');
+                die;
+            }
+            $others[is_default]=0;
+            $others[create_date]=time();
+            $others[create_by]=$_SESSION['userid'];
+        }
 
+        $data=[
+            'template_name'=>$_POST['template_name'],//模板名称
+            'country'=>$_POST['country'],//国家
+            'province'=>$_POST['province'],//省
+            'city'=>$_POST['city'],//市
+            'district'=>$_POST['area'],//区
+            'is_free'=>$_POST['is_free'],////是否包邮(0.不包邮 1.包邮)
+            'price_way'=>$_POST['price_way'],//计价方式(1.按件 2.按重量 3.按体积)
+            'shipping_way'=>'0',//快递
+            'shop_id'=>$_SESSION['userid'],//商铺id
+            'create_date'=>time(),//时间
+            'create_by'=>$_SESSION['userid'],
+        ];
+        $way_id = $this->freight->insert($data,true);
+        if($way_id){
+            foreach ($_POST['default'] as &$default){
+                $default[template_id]=$way_id;
+                $default_res=$this->shipping_way->insert($default);
+            }
+            foreach ($_POST['other'] as &$other){
+                $other[template_id]=$way_id;
+                $other_res=$this->shipping_way->insert($other);
+            }
+            if(!$default_res&&!$other_res){
+                showmessage(L('运送方式添加失败'),'');
+            }else{
+                showmessage(L('操作成功'),'?m=freight&c=freight&a=freightlist');
+            }
+        }else{
+            showmessage(L('添加失败'),'');
+        }
 	}
 
 	/**
-	 * 删除友情链接  
-	 * @param	intval	$sid	友情链接ID，递归删除
+	 * 删除
 	 */
 	public function delete() {
-  		if((!isset($_GET['linkid']) || empty($_GET['linkid'])) && (!isset($_POST['linkid']) || empty($_POST['linkid']))) {
+  		if((!isset($_GET['template_id']) || empty($_GET['template_id'])) && (!isset($_POST['template_id']) || empty($_POST['template_id']))) {
 			showmessage(L('illegal_parameters'), HTTP_REFERER);
 		} else {
-			if(is_array($_POST['linkid'])){
-				foreach($_POST['linkid'] as $linkid_arr) {
- 					//批量删除友情链接
-					$this->db->delete(array('linkid'=>$linkid_arr));
-					//更新附件状态
-					if(pc_base::load_config('system','attachment_stat')) {
-						$this->attachment_db = pc_base::load_model('attachment_model');
-						$this->attachment_db->api_delete('link-'.$linkid_arr);
-					}
-				}
-				showmessage(L('operation_success'),'?m=link&c=link');
-			}else{
-				$linkid = intval($_GET['linkid']);
-				if($linkid < 1) return false;
-				//删除友情链接
-				$result = $this->db->delete(array('linkid'=>$linkid));
-				//更新附件状态
-				if(pc_base::load_config('system','attachment_stat')) {
-					$this->attachment_db = pc_base::load_model('attachment_model');
-					$this->attachment_db->api_delete('link-'.$linkid);
-				}
-				if($result){
-					showmessage(L('operation_success'),'?m=link&c=link');
-				}else {
-					showmessage(L("operation_failure"),'?m=link&c=link');
-				}
-			}
+            $template_id = intval($_GET['template_id']);
+            if($template_id < 1) return false;
+            //删除友情链接
+            $result = $this->freight->update(array('status'=>0),array('template_id'=>$template_id));
+            if($result){
+                showmessage(L('operation_success'),'?m=freight&c=freight&a=freightlist');
+            }else {
+                showmessage(L("operation_failure"),'?m=freight&c=freight&a=freightlist');
+            }
 			showmessage(L('operation_success'), HTTP_REFERER);
 		}
 	}
-	
-	/**
-	 * 说明:对字符串进行处理
-	 * @param $string 待处理的字符串
-	 * @param $isjs 是否生成JS代码
-	 */
-	function format_js($string, $isjs = 1){
-		$string = addslashes(str_replace(array("\r", "\n"), array('', ''), $string));
-		return $isjs ? 'document.write("'.$string.'");' : $string;
-	}
- 
- 
 	
 }
 ?>

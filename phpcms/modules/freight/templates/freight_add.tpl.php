@@ -6,7 +6,6 @@ include $this->admin_tpl('header','admin');
 <link href="statics/css/bootstrap.css" rel="stylesheet">
 <script src="statics/js/bootstrap.min.js"></script>
 <script src="statics/js/jquery.js"></script>
-<!-- <script src="statics/js/script.js"></script> -->
 <style>
 .mapbtn {
 	padding: 8px 15px;
@@ -28,8 +27,6 @@ include $this->admin_tpl('header','admin');
 .default{
 	display: inline-block;
 	width:130px;
-	
-
 }
 .default1{
 	display: inline-block;
@@ -79,6 +76,12 @@ include $this->admin_tpl('header','admin');
 	margin-right:10px;
 	display:block;
 	float: right;
+}
+.mysub{
+    padding: 5px 10px;
+    border-radius: 10px;
+    background-color: #0893E6;
+    color: white;
 }
 </style>
 <script type="text/javascript">
@@ -223,12 +226,6 @@ function closeDiv(){
 	$('#'+m+'id').val(textId);
 }
 
-
-
-
-
-
-
 </script>
 
 <div class="pad_10">
@@ -237,7 +234,7 @@ function closeDiv(){
 	
 	<tr>
 		<th width="100"><?php echo '模板名称'?>：</th>
-		<td><input type="text" name="freight[template_name]" id="link_name" size="30" class="input-text"></td>
+		<td><input type="text" name="template_name" id="template_name" size="30" class="input-text"></td>
 	</tr>
 	
 	<tr>
@@ -286,13 +283,13 @@ function closeDiv(){
 		<td><input type="checkbox" name="shipping_way[]" value="0" price_way="1" id="kuaidi" />快递</p>
 			<div id="jifeifangshi_kuaidi"></td>
 	</tr>
-	 
+
 
 	<tr>
 		<th></th>
-		<td><input type="hidden" name="forward" value="?m=link&c=link&a=add"> <input
-		type="submit" name="dosubmit" id="dosubmit" class="dialog"
-		value=" <?php echo '提交'?> "></td>
+		<td>
+            <input type="submit" name="dosubmit" id="dosubmit" class="mysub" value="提交">
+        </td>
 	</tr>
 
 </table>

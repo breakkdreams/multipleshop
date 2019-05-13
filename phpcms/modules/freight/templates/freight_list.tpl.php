@@ -70,10 +70,10 @@ if(is_array($infos)){
 		
 	
 		<td align="center" width="12%"><a href="###"
-			onclick="edit(<?php echo $info['linkid']?>, '<?php echo new_addslashes(new_html_special_chars($info['name']))?>')"
-			title="<?php echo L('edit')?>"><?php echo L('edit')?></a> |  <a
-			href='?m=link&c=link&a=delete&linkid=<?php echo $info['linkid']?>'
-			onClick="return confirm('<?php echo L('confirm', array('message' => new_addslashes(new_html_special_chars($info['name']))))?>')"><?php echo L('delete')?></a> 
+			onclick="edit(<?php echo $info['template_id']?>)"
+			title="查看模板">查看模板</a> |  <a
+			href='?m=freight&c=freight&a=delete&template_id=<?php echo $info['template_id']?>'
+			onClick="return confirm('<?php echo L('confirm', array('message' => new_addslashes(new_html_special_chars($info['template_name']))))?>')"><?php echo L('delete')?></a>
 		</td>
 	</tr>
 	<?php
@@ -89,9 +89,9 @@ if(is_array($infos)){
 </div>
 <script type="text/javascript">
 
-function edit(id, name) {
-	window.top.art.dialog({id:'edit'}).close();
-	window.top.art.dialog({title:'<?php echo L('edit')?> '+name+' ',id:'edit',iframe:'?m=link&c=link&a=edit&linkid='+id,width:'700',height:'450'}, function(){var d = window.top.art.dialog({id:'edit'}).data.iframe;var form = d.document.getElementById('dosubmit');form.click();return false;}, function(){window.top.art.dialog({id:'edit'}).close()});
+function edit(id) {
+    var pc_hash = GetQueryString('pc_hash');
+    window.location.href='?m=freight&c=freight&a=infopage&template_id='+id+'&pc_hash='+pc_hash;
 }
 function checkuid() {
 	var ids='';

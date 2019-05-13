@@ -444,3 +444,22 @@
 <?php exit;?>05-11 13:47:36 | 2 | db_mysqli::errno(): Couldn't fetch mysqli | phpcms/libs/classes/db_mysqli.class.php | 397
 <?php exit;?>05-11 13:47:36 | 2 | db_mysqli::error(): Couldn't fetch mysqli | phpcms/libs/classes/db_mysqli.class.php | 390
 <?php exit;?>05-11 13:47:36 | 2 | mysqli::close(): Couldn't fetch mysqli | phpcms/libs/classes/db_mysqli.class.php | 409
+<?php exit;?>05-13 10:04:27 | 2 | Invalid argument supplied for foreach() | phpcms/modules/freight/freight.php | 63
+<?php exit;?>05-13 10:04:27 | 2 | Invalid argument supplied for foreach() | phpcms/modules/freight/freight.php | 91
+<?php exit;?>05-13 10:08:42 | 2 | Invalid argument supplied for foreach() | phpcms/modules/freight/freight.php | 63
+<?php exit;?>05-13 10:08:42 | 2 | Invalid argument supplied for foreach() | phpcms/modules/freight/freight.php | 91
+<?php exit;?>05-13 10:08:42 | 8192 | mysql_insert_id(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead | phpcms/modules/freight/freight.php | 132
+<?php exit;?>05-13 10:08:42 | 2 | mysql_insert_id(): Access denied for user ''@'localhost' (using password: NO) | phpcms/modules/freight/freight.php | 132
+<?php exit;?>05-13 10:08:42 | 2 | mysql_insert_id(): A link to the server could not be established | phpcms/modules/freight/freight.php | 132
+<?php exit;?>05-13 10:08:46 | 2 | Invalid argument supplied for foreach() | phpcms/modules/freight/freight.php | 63
+<?php exit;?>05-13 10:08:46 | 2 | Invalid argument supplied for foreach() | phpcms/modules/freight/freight.php | 91
+<?php exit;?>05-13 10:08:46 | 8192 | mysql_insert_id(): The mysql extension is deprecated and will be removed in the future: use mysqli or PDO instead | phpcms/modules/freight/freight.php | 132
+<?php exit;?>05-13 10:08:46 | 2 | mysql_insert_id(): Access denied for user ''@'localhost' (using password: NO) | phpcms/modules/freight/freight.php | 132
+<?php exit;?>05-13 10:08:46 | 2 | mysql_insert_id(): A link to the server could not be established | phpcms/modules/freight/freight.php | 132
+<?php exit;?>05-13 10:09:15 | 2 | Invalid argument supplied for foreach() | phpcms/modules/freight/freight.php | 63
+<?php exit;?>05-13 10:09:15 | 2 | Invalid argument supplied for foreach() | phpcms/modules/freight/freight.php | 91
+<?php exit;?>05-13 10:13:44 | 2 | Invalid argument supplied for foreach() | phpcms/modules/freight/freight.php | 63
+<?php exit;?>05-13 10:13:44 | 2 | Invalid argument supplied for foreach() | phpcms/modules/freight/freight.php | 91
+<?php exit;?>05-13 10:27:24 | 2 | Invalid argument supplied for foreach() | phpcms/modules/freight/freight.php | 91
+<?php exit;?>05-13 10:27:24 | 2 | Invalid argument supplied for foreach() | phpcms/modules/freight/freight.php | 136
+<?php exit;?>05-13 10:35:15 | 2 | Invalid argument supplied for foreach() | phpcms/modules/freight/templates/freight_edit.tpl.php | 28
