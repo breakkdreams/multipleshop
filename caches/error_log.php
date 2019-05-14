@@ -463,3 +463,6 @@
 <?php exit;?>05-13 10:27:24 | 2 | Invalid argument supplied for foreach() | phpcms/modules/freight/freight.php | 91
 <?php exit;?>05-13 10:27:24 | 2 | Invalid argument supplied for foreach() | phpcms/modules/freight/freight.php | 136
 <?php exit;?>05-13 10:35:15 | 2 | Invalid argument supplied for foreach() | phpcms/modules/freight/templates/freight_edit.tpl.php | 28
+<?php exit;?>05-13 14:03:03 | 2 | call_user_func() expects parameter 1 to be a valid callback, cannot access protected method freightApi::getRyToken() | phpcms/libs/classes/application.class.php | 31
+<?php exit;?>05-13 14:03:23 | 2 | call_user_func() expects parameter 1 to be a valid callback, cannot access protected method freightApi::getRyToken() | phpcms/libs/classes/application.class.php | 31
+<?php exit;?>05-13 14:03:37 | 2 | call_user_func() expects parameter 1 to be a valid callback, cannot access protected method freightApi::getRyToken() | phpcms/libs/classes/application.class.php | 31
