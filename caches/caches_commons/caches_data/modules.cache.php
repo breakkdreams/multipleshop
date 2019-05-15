@@ -512,5 +512,45 @@ return array (
     'installdate' => '2010-09-06',
     'updatedate' => '2010-09-06',
   ),
+  'chatlog' => 
+  array (
+    'module' => 'chatlog',
+    'name' => '聊天模板',
+    'url' => '',
+    'iscore' => '0',
+    'version' => '1.0',
+    'description' => '',
+    'setting' => 'array (
+  1 => 
+  array (
+    \'is_post\' => \'1\',
+    \'enablecheckcode\' => \'0\',
+  ),
+)',
+    'listorder' => '0',
+    'disabled' => '0',
+    'installdate' => '2010-09-06',
+    'updatedate' => '2010-09-06',
+  ),
+  'zymanagement' => 
+  array (
+    'module' => 'zymanagement',
+    'name' => '测试',
+    'url' => '',
+    'iscore' => '0',
+    'version' => '1.0',
+    'description' => '',
+    'setting' => 'array (
+  1 => 
+  array (
+    \'is_post\' => \'1\',
+    \'enablecheckcode\' => \'0\',
+  ),
+)',
+    'listorder' => '0',
+    'disabled' => '0',
+    'installdate' => '2010-09-06',
+    'updatedate' => '2010-09-06',
+  ),
 );
 ?>
